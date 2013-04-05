@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">CityNow</string>
+    <string name="button_evenimente">Evenimente</string>
+    <string name="button_filme">Filme</string>
+    <string name="button_logo">Logo</string>
+    <string name="button_promotii">Promotii</string>
+    <string name="button_oras">Oras</string>
+    <string name="button_search">Cauta</string>
+    <string name="default_oras">Craiova</string>
+    <string name="user_logo">Logo</string>
+</resources>

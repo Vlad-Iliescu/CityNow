@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ImageView
+            android:layout_width="46dip"
+            android:layout_height="46dip"
+            android:id="@+id/logoView"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:background="#DDD"
+            android:layout_margin="2dip"
+            android:contentDescription="@string/user_logo"/>
+
+    <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="User"
+            android:id="@+id/usernameView"
+            android:layout_toRightOf="@+id/logoView"
+            android:layout_alignTop="@+id/logoView"
+            android:layout_alignParentRight="true"
+            android:textStyle="bold"
+            android:textSize="20dip"/>
+
+    <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Adresa"
+            android:id="@+id/adressView"
+            android:layout_toRightOf="@+id/logoView"
+            android:layout_below="@+id/usernameView"
+            android:layout_alignRight="@+id/usernameView"
+            android:textColor="#666"/>
+
+</RelativeLayout>

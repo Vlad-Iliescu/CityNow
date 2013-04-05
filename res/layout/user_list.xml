@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="#474747"
+            android:focusable="false"
+            android:layout_margin="0dp"
+            android:padding="0dp"
+            android:layout_weight="0">
+
+        <ImageButton
+                android:layout_width="70dp"
+                android:layout_height="45dp"
+                android:id="@+id/logoButtonSubcat"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/button_logo"
+                android:background="@null"
+                android:layout_marginLeft="7dp"
+                android:contentDescription="@string/button_logo"
+                />
+
+        <ImageButton
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:id="@+id/filmButtonSubcat"
+                android:layout_alignParentLeft="false"
+                android:layout_alignParentRight="true"
+                android:background="@null"
+                android:src="@drawable/button_film"
+                android:layout_marginRight="5dp"
+                android:contentDescription="@string/button_filme"/>
+
+        <ImageButton
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:id="@+id/promotiiButtonSubcat"
+                android:layout_toLeftOf="@+id/filmButtonSubcat"
+                android:layout_alignTop="@+id/logoButtonSubcat"
+                android:src="@drawable/button_promotii"
+                android:adjustViewBounds="false"
+                android:background="@null"
+                android:contentDescription="@string/button_promotii"
+                android:layout_marginRight="5dp"/>
+
+        <ImageButton
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:id="@+id/evenimenteButtonSubcat"
+                android:src="@drawable/button_evenimente_normal"
+                android:background="@null"
+                android:contentDescription="@string/button_evenimente"
+                android:layout_toLeftOf="@+id/promotiiButtonSubcat"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="5dp"/>
+    </RelativeLayout>
+
+    <ListView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/usersList"
+            android:layout_weight="1"
+            android:clickable="true"
+            />
+
+</LinearLayout>

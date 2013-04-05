@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="#474747"
+            android:focusable="false"
+            android:layout_margin="0dp"
+            android:padding="0dp"
+            android:layout_weight="0">
+
+        <ImageButton
+                android:layout_width="70dp"
+                android:layout_height="45dp"
+                android:id="@+id/logoButton"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/button_logo"
+                android:background="@null"
+                android:layout_marginLeft="7dp"
+                android:contentDescription="@string/button_logo"
+                android:onClick="onLogoButtonClick"/>
+
+        <ImageButton
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:id="@+id/filmButton"
+                android:layout_alignParentLeft="false"
+                android:layout_alignParentRight="true"
+                android:background="@null"
+                android:src="@drawable/button_film"
+                android:layout_marginRight="5dp"
+                android:contentDescription="@string/button_filme"/>
+
+        <ImageButton
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:id="@+id/promotiiButton"
+                android:layout_toLeftOf="@+id/filmButton"
+                android:layout_alignTop="@+id/logoButton"
+                android:src="@drawable/button_promotii"
+                android:adjustViewBounds="false"
+                android:background="@null"
+                android:contentDescription="@string/button_promotii"
+                android:layout_marginRight="5dp"/>
+
+        <ImageButton
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:id="@+id/evenimenteButton"
+                android:src="@drawable/button_evenimente_normal"
+                android:background="@null"
+                android:contentDescription="@string/button_evenimente"
+                android:layout_toLeftOf="@+id/promotiiButton"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="5dp"/>
+    </RelativeLayout>
+
+    <ListView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/categoriiList"
+            android:layout_weight="1"
+            android:clickable="true"
+            />
+
+    <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:background="#474747">
+
+        <ImageButton
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:id="@+id/orasButton"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:background="@null"
+                android:src="@drawable/button_oras"
+                android:contentDescription="@string/button_oras"
+                android:layout_marginLeft="5dp"/>
+
+        <ImageButton
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:id="@+id/searchButton"
+                android:layout_alignParentRight="true"
+                android:layout_alignBottom="@+id/orasButton"
+                android:src="@drawable/button_search"
+                android:background="@null"
+                android:layout_marginRight="5dp"
+                android:contentDescription="@string/button_search"/>
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:text="@string/default_oras"
+                android:id="@+id/textView1"
+                android:layout_toRightOf="@+id/orasButton"
+                android:layout_alignTop="@+id/orasButton"
+                android:layout_toLeftOf="@+id/searchButton"
+                android:clickable="false"
+                android:gravity="center_vertical"
+                android:textColor="#cccccc"
+                android:textStyle="bold"
+                android:textSize="20dp"
+                android:layout_marginTop="10dp"/>
+
+    </RelativeLayout>
+
+</LinearLayout>

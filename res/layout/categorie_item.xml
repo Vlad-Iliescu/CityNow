@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="horizontal"
+              android:layout_width="fill_parent"
+              android:layout_height="50dip"
+              android:paddingTop="2dip"
+              android:paddingBottom="2dip">
+
+    <ImageView
+            android:layout_width="46dip"
+            android:layout_height="46dip"
+            android:id="@+id/imageView"
+            android:layout_gravity="center_horizontal|top"
+            android:layout_marginLeft="3dip"
+            android:background="#DDD"/>
+
+    <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:text="Categorie"
+            android:id="@+id/denumire"
+            android:layout_marginLeft="3dip"
+            android:textSize="20dip"
+            android:textStyle="bold"
+            android:gravity="center_vertical"/>
+
+</LinearLayout>
