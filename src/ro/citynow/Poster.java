@@ -27,8 +27,6 @@ public class Poster extends AsyncTask<String, Integer, ServerResponse> {
                 parameters.add(parseParameters(urls[i]));
             }
         }
-        String responseData = "";
-
         final String responseBody;
         final int responseCode;
 
@@ -41,7 +39,7 @@ public class Poster extends AsyncTask<String, Integer, ServerResponse> {
             long contentLength = response.getEntity().getContentLength();
             Log.d("poster", String.valueOf(contentLength));
             int done = 0;
-            float progress = 0f;
+            float progress;
 
             StringBuilder builder = new StringBuilder();
             BufferedReader reader = new BufferedReader(
@@ -51,9 +49,9 @@ public class Poster extends AsyncTask<String, Integer, ServerResponse> {
             char[] buffer = new char[length];
             int offset = 0;
 
-            int bytesRead = 0;
+            int bytesRead;
             while ((bytesRead = reader.read(buffer, offset, length)) != -1) {
-                builder.append(buffer);
+                builder.append(buffer, offset, bytesRead);
                 done += bytesRead;
 
                 progress = ( (done * 100.0f) / contentLength );

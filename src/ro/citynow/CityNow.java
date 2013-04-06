@@ -248,7 +248,7 @@ public class CityNow extends Activity {
             final ThumbnailAsyncTask creator = new ThumbnailAsyncTask(imageView);
             imageView.setImageBitmap(null);
             imageView.setTag(creator);
-            creator.execute(pozaId, Long.valueOf(cursor.getInt(cursor.getColumnIndex(DB.CATEGORIE.CATEGORIE_ID))));
+            creator.execute(pozaId, (long) cursor.getInt(cursor.getColumnIndex(DB.CATEGORIE.CATEGORIE_ID)));
         }
     }
 
@@ -283,19 +283,19 @@ public class CityNow extends Activity {
 
             if (blob == null) {
                 Log.d("bitmap", String.format("{cat=%d, bm=null, m='no blob'}", cat_id));
+                Log.d("blob", String.valueOf(cat_id));
                 return null;
             }
 
             byte[] decodedByte = new byte[0];
             try {
-                decodedByte = Base64.decode(blob.getBytes(), Base64.URL_SAFE);
-            } catch (Exception ex) {
+                decodedByte = Base64.decode(blob.getBytes(), Base64.NO_WRAP);
+            } catch (IllegalArgumentException ex) {
+                Log.d("blob", String.valueOf(cat_id));
                 Log.d("bitmap", String.format("{cat=%d, bm=null, m='no decode', dec=%s}", cat_id, Arrays.toString(decodedByte)));
                 return null;
             }
-//            final byte[] decodedByte = MyBase64.decode(blob);
 
-            Log.d("decode", String.valueOf(decodedByte.length));
             Bitmap bitmap = null;
 
             if (decodedByte.length > 0) {
