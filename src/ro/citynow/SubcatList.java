@@ -104,6 +104,11 @@ public class SubcatList extends Activity {
                 Integer cat_id = subcategorie.getInt(subcategorie.getColumnIndex(DB.SUBCATEGORIE.CATEGORIE_ID));
                 Integer subcat_id = subcategorie.getInt(subcategorie.getColumnIndex(DB.SUBCATEGORIE.SUBCATEGORIE_ID));
 
+                Intent intent = new Intent(this, UserList.class);
+                intent.putExtra("categorie_id", cat_id);
+                intent.putExtra("subcategorie_id", subcat_id);
+                startActivityForResult(intent, LIST_ENTRY);
+
                 Log.d("resp", String.format("{cat=%d, subcat=%d}", cat_id, subcat_id));
             }
         }

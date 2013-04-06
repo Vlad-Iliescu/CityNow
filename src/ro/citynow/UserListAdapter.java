@@ -1,6 +1,5 @@
 package ro.citynow;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +14,6 @@ public class UserListAdapter extends BaseAdapter {
 
     public void addUser(User user) {
         userList.add(user);
-        Log.d("usr", String.valueOf(user));
     }
 
     @Override
@@ -52,5 +50,9 @@ public class UserListAdapter extends BaseAdapter {
         adress.setText(user.getFullAdress());
 
         return view;
+    }
+
+    public void clearList() {
+        this.userList.clear();
     }
 }

@@ -6,20 +6,23 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.widget.AbsListView;
 import android.widget.ListView;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class UserList extends Activity {
-    Integer categorieId;
-    Integer subcategorieId;
-    EndlessScrollListener scrollListener;
-    UserListAdapter adapter = new UserListAdapter();
+    private Integer categorieId;
+    private Integer subcategorieId;
+    private EndlessScrollListener scrollListener;
+    private UserListAdapter adapter = new UserListAdapter();
 
     private ProgressDialog mProgressDialog;
-    private Handler handler;
 
+    private int page = 0;
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.user_list);
@@ -28,62 +31,42 @@ public class UserList extends Activity {
         this.categorieId = intent.getIntExtra("categorie_id", 0);
         this.subcategorieId = intent.getIntExtra("subcategorie_id", 0);
 
+        initDialog();
+        initList();
+        loadMoneItems(0);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        this.adapter.clearList();
+    }
+
+    private void initDialog() {
         mProgressDialog = new ProgressDialog(UserList.this);
         mProgressDialog.setMessage("A message");
         mProgressDialog.setIndeterminate(false);
         mProgressDialog.setMax(100);
         mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+    }
 
-        handler = new Handler();
-        this.scrollListener = new EndlessScrollListener() {
-            @Override
-            public void loadMore(int currentPage) {
-                this.setMoreItems(loadMoneItems(currentPage, false));
-            }
-        };
+    private void initList() {
+        this.scrollListener = new EndlessScrollListener();
 
         ListView listView = (ListView) findViewById(R.id.usersList);
         listView.setAdapter(adapter);
-
-
-        loadMoneItems(0, true);
+        listView.setOnScrollListener(scrollListener);
     }
 
-    private void updateUseri(ServerResponse response, boolean setUpScroll) {
-        Log.d("usr", String.valueOf(response.getResponseCode()));
-        boolean attach = true;
-
-        try {
-            JSONObject jsonObject = response.parseAsJson();
-            Integer lenght = jsonObject.getInt("l");
-            Integer items = jsonObject.getInt("i");
-
-            attach = (lenght >= items);
-
-            this.scrollListener.setMoreItems(lenght < items);
-            JSONArray users = jsonObject.getJSONArray("u");
-            for (int i=0; i<users.length(); ++i) {
-                JSONObject user = users.getJSONObject(i);
-                adapter.addUser(new User(user.getInt("i"), user.getString("d"), user.getString("z"),
-                        user.getString("a"), user.getString("l")));
-            }
-            adapter.notifyDataSetChanged();
-        } catch (JSONException e) {
-            e.printStackTrace();
-            attach = false;
-        }
-
-
-
-        if (setUpScroll && attach) {
-            ListView listView = (ListView) findViewById(R.id.usersList);
-            listView.setOnScrollListener(scrollListener);
-        }
+    private void loadNextPage() {
+        Log.d("usr", String.format("next page triggered = %d", page + 1));
+        this.scrollListener.setHasMoreItems(false);
+        this.loadMoneItems(++page);
     }
 
-    private boolean loadMoneItems(Integer page, boolean setUpScroll) {
+    private void loadMoneItems(Integer page) {
+        Log.d("usr", String.format("page = %d", page));
         final String url = "http://www.citynow.ro/m/gl.json";
-        final boolean setUp = setUpScroll;
 
         Poster poster = new Poster() {
             @Override
@@ -101,13 +84,70 @@ public class UserList extends Activity {
             @Override
             protected void onPostExecute(ServerResponse serverResponse) {
                 super.onPostExecute(serverResponse);
-                updateUseri(serverResponse, setUp);
-                mProgressDialog.hide();
+                updateUseri(serverResponse);
+                mProgressDialog.setProgress(0);
+                mProgressDialog.dismiss();
             }
         };
 
         poster.execute(url, String.format("c=%d", this.categorieId), String.format("s=%d", this.subcategorieId),
-                String.format("p=%d", page));
-        return true;
+                       String.format("p=%d", page));
     }
+
+    private void updateUseri(ServerResponse response) {
+        Log.d("usr", String.valueOf(response.getResponseCode()));
+        boolean hasMore;
+
+        try {
+            final JSONObject jsonObject = response.parseAsJson();
+            final Integer lenght = jsonObject.getInt("l");
+            final Integer items = jsonObject.getInt("i");
+
+            hasMore = (lenght >= items);
+
+            final JSONArray users = jsonObject.getJSONArray("u");
+            for (int i=0; i<users.length(); ++i) {
+                JSONObject user = users.getJSONObject(i);
+                adapter.addUser(new User(user.getInt("i"), user.getString("d"), user.getString("z"),
+                        user.getString("a"), user.getString("l")));
+            }
+            adapter.notifyDataSetChanged();
+        } catch (JSONException e) {
+            e.printStackTrace();
+            hasMore = false;
+        }
+
+        this.scrollListener.setHasMoreItems(hasMore);
+    }
+
+    //-------------------
+    //      CLASSES
+    //-------------------
+
+    public class EndlessScrollListener implements AbsListView.OnScrollListener {
+        private int visibleThreshold = 5;
+        private boolean hasMoreItems = false;
+
+        public void setHasMoreItems(boolean hasMoreItems) {
+            this.hasMoreItems = hasMoreItems;
+        }
+
+        public EndlessScrollListener() {}
+
+        public EndlessScrollListener(int visibleThreshold) {
+            this.visibleThreshold = visibleThreshold;
+        }
+
+        @Override
+        public void onScrollStateChanged(AbsListView absListView, int i) {}
+
+        @Override
+        public void onScroll(AbsListView absListView, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+            if (hasMoreItems && (totalItemCount - visibleItemCount) < (firstVisibleItem + visibleThreshold)) {
+                Log.d("usr", String.format(" %d - %d - %d", totalItemCount, visibleItemCount, firstVisibleItem));
+                loadNextPage();
+            }
+        }
+    }
+
 }
