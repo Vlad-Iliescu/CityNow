@@ -83,25 +83,20 @@ public class DBHelper {
     }
 
     public Cursor getCategorie(Integer id) {
-        String selection = null;
-        String[] selectionArgs = null;
         if (id == null) {
             return null;
         }
 
-        selection = DB.CATEGORIE.ID + " = ? ";
-        selectionArgs = new String[]{ String.valueOf(id) };
+        String selection = DB.CATEGORIE.ID + " = ? ";
+        String[] selectionArgs = new String[]{ String.valueOf(id) };
 
         return db.query(DB.CATEGORIE.TABLE_NAME, new String[]{ DB.CATEGORIE.CATEGORIE_ID, DB.CATEGORIE.SUBCAT },
                 selection, selectionArgs, null, null, null);
     }
 
     public Cursor getCategorie(long id) {
-        String selection = null;
-        String[] selectionArgs = null;
-
-        selection = DB.CATEGORIE.ID + " = ? ";
-        selectionArgs = new String[]{ String.valueOf(id) };
+        String selection = DB.CATEGORIE.ID + " = ? ";
+        String[] selectionArgs = new String[]{ String.valueOf(id) };
 
         return db.query(DB.CATEGORIE.TABLE_NAME, new String[]{ DB.CATEGORIE.CATEGORIE_ID, DB.CATEGORIE.SUBCAT },
                 selection, selectionArgs, null, null, null);
@@ -111,7 +106,8 @@ public class DBHelper {
         String selection = DB.CATEGORIE.ACTIV + " = ? ";
         String[] selectionArgs =  new String[]{ "1" };
         return db.query(DB.CATEGORIE.TABLE_NAME,
-                new String[]{ DB.CATEGORIE.ID, DB.CATEGORIE.NAME, DB.CATEGORIE.TEXT_COLOR, DB.CATEGORIE.POZA, DB.CATEGORIE.CATEGORIE_ID },
+                new String[]{ DB.CATEGORIE.ID, DB.CATEGORIE.NAME, DB.CATEGORIE.TEXT_COLOR, DB.CATEGORIE.POZA,
+                              DB.CATEGORIE.CATEGORIE_ID },
                 selection, selectionArgs, null, null, DB.CATEGORIE.NAME+" ASC");
     }
 
@@ -119,7 +115,8 @@ public class DBHelper {
         String selection = DB.SUBCATEGORIE.ACTIV + " = ? AND " + DB.SUBCATEGORIE.CATEGORIE_ID + " = ? ";
         String[] selectionArgs =  new String[]{ "1", String.valueOf(categorieId)};
         return db.query(DB.SUBCATEGORIE.TABLE_NAME,
-                new String[]{ DB.SUBCATEGORIE.ID, DB.SUBCATEGORIE.NAME, DB.SUBCATEGORIE.TEXT_COLOR, DB.SUBCATEGORIE.POZA },
+                new String[]{ DB.SUBCATEGORIE.ID, DB.SUBCATEGORIE.SUBCATEGORIE_ID, DB.SUBCATEGORIE.NAME,
+                              DB.SUBCATEGORIE.TEXT_COLOR },
                 selection, selectionArgs, null, null, DB.SUBCATEGORIE.NAME+" ASC");
     }
 
@@ -141,15 +138,23 @@ public class DBHelper {
     }
 
     public Cursor getSubcategorie(long id) {
-        String selection = null;
-        String[] selectionArgs = null;
-
-        selection = DB.SUBCATEGORIE.ID + " = ? ";
-        selectionArgs = new String[]{ String.valueOf(id) };
+        String selection = DB.SUBCATEGORIE.ID + " = ? ";
+        String[] selectionArgs = new String[]{ String.valueOf(id) };
 
         return db.query(DB.SUBCATEGORIE.TABLE_NAME,
                 new String[]{ DB.CATEGORIE.CATEGORIE_ID, DB.SUBCATEGORIE.SUBCATEGORIE_ID },
                 selection, selectionArgs, null, null, null);
+    }
+
+    public Cursor getPozaSubcategorie(Long id) {
+        String selection = null;
+        String[] selectionArgs = null;
+        if (id != null) {
+            selection = DB.SUBCATEGORIE.ID + " = ? ";
+            selectionArgs = new String[]{String.valueOf(id)};
+        }
+        return db.query(DB.SUBCATEGORIE.TABLE_NAME, new String[]{ DB.SUBCATEGORIE.POZA }, selection,
+                selectionArgs, null, null, null);
     }
 
     public long saveCategorie(Integer categorie_id, String nume, String poza, String text_color,

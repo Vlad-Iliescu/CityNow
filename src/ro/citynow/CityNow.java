@@ -98,7 +98,7 @@ public class CityNow extends Activity {
             protected void onPostExecute(ServerResponse serverResponse) {
                 super.onPostExecute(serverResponse);
                 updateCategorii(serverResponse);
-                mProgressDialog.hide();
+                mProgressDialog.dismiss();
             }
         };
 
