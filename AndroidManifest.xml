@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="ro.citynow"
-          android:versionCode="1"
-          android:versionName="1.0">
+          android:versionCode="1012001"
+          android:versionName="0.1">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
-    <uses-sdk android:minSdkVersion="10"/>
+    <uses-sdk android:minSdkVersion="10" android:targetSdkVersion="16"/>
     <application android:label="@string/app_name" android:theme="@android:style/Theme.Light.NoTitleBar"
                  android:icon="@drawable/button_logo_normal">
         <activity
