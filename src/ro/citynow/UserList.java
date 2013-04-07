@@ -1,24 +1,25 @@
 package ro.citynow;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.widget.AbsListView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class UserList extends Activity {
+    private static final int USER_ENTRY = 3;
+
     private Integer categorieId;
     private Integer subcategorieId;
     private EndlessScrollListener scrollListener;
     private UserListAdapter adapter = new UserListAdapter();
 
-    private ProgressDialog mProgressDialog;
+    private ProgressBar progressBar;
 
     private int page = 0;
 
@@ -30,8 +31,8 @@ public class UserList extends Activity {
         Intent intent = getIntent();
         this.categorieId = intent.getIntExtra("categorie_id", 0);
         this.subcategorieId = intent.getIntExtra("subcategorie_id", 0);
+        this.progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
-        initDialog();
         initList();
         loadMoneItems(0);
     }
@@ -40,14 +41,6 @@ public class UserList extends Activity {
     protected void onDestroy() {
         super.onDestroy();
         this.adapter.clearList();
-    }
-
-    private void initDialog() {
-        mProgressDialog = new ProgressDialog(UserList.this);
-        mProgressDialog.setMessage("A message");
-        mProgressDialog.setIndeterminate(false);
-        mProgressDialog.setMax(100);
-        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
     }
 
     private void initList() {
@@ -72,21 +65,19 @@ public class UserList extends Activity {
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                mProgressDialog.show();
             }
 
             @Override
             protected void onProgressUpdate(Integer... values) {
                 super.onProgressUpdate(values);
-                mProgressDialog.setProgress(values[0]);
+                progressBar.setProgress(values[0]);
             }
 
             @Override
             protected void onPostExecute(ServerResponse serverResponse) {
                 super.onPostExecute(serverResponse);
+                progressBar.setProgress(0);
                 updateUseri(serverResponse);
-                mProgressDialog.setProgress(0);
-                mProgressDialog.dismiss();
             }
         };
 

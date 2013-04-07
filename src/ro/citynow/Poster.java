@@ -85,5 +85,4 @@ public class Poster extends AsyncTask<String, Integer, ServerResponse> {
         }
     }
 
-
 }

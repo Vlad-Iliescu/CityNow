@@ -2,7 +2,6 @@ package ro.citynow;
 
 import android.app.Activity;
 import android.app.ActivityManager;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -19,8 +18,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
 import android.widget.AbsListView.RecyclerListener;
+import android.widget.*;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -31,12 +30,12 @@ public class CityNow extends Activity {
     public static final int SUBCAT_ENTRY = 1;
     public static final int LIST_ENTRY = 2;
 
-    private ProgressDialog mProgressDialog;
     private Handler handler;
     private DBHelper dbHelper;
     private CategorieAdapter adapter;
 
     private ThumbnailCache thumbnailCache;
+    private ProgressBar progressBar;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -45,11 +44,10 @@ public class CityNow extends Activity {
 
         handler = new Handler();
         this.dbHelper = new DBHelper(this);
+        this.progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
-        initDialog();
         initCache();
         initList();
-
     }
 
     @Override
@@ -85,20 +83,19 @@ public class CityNow extends Activity {
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                mProgressDialog.show();
             }
 
             @Override
             protected void onProgressUpdate(Integer... values) {
                 super.onProgressUpdate(values);
-                mProgressDialog.setProgress(values[0]);
+                progressBar.setProgress(values[0]);
             }
 
             @Override
             protected void onPostExecute(ServerResponse serverResponse) {
                 super.onPostExecute(serverResponse);
+                progressBar.setProgress(0);
                 updateCategorii(serverResponse);
-                mProgressDialog.dismiss();
             }
         };
 
@@ -153,14 +150,6 @@ public class CityNow extends Activity {
     private void refreshCategorii() {
         this.adapter.changeCursor(dbHelper.getCategorii());
         this.adapter.notifyDataSetChanged();
-    }
-
-    private void initDialog() {
-        mProgressDialog = new ProgressDialog(CityNow.this);
-        mProgressDialog.setMessage("loading data...");
-        mProgressDialog.setIndeterminate(false);
-        mProgressDialog.setMax(100);
-        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
     }
 
     private void initCache() {

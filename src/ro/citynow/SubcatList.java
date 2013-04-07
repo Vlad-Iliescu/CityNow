@@ -2,7 +2,6 @@ package ro.citynow;
 
 import android.app.Activity;
 import android.app.ActivityManager;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -29,13 +28,13 @@ import java.util.Arrays;
 public class SubcatList extends Activity {
     private static final int LIST_ENTRY = 2;
 
-    private ProgressDialog mProgressDialog;
     private Handler handler;
     private DBHelper dbHelper;
     private SubcategorieAdapter adapter;
 
     private Integer categorieId;
     private ThumbnailCache thumbnailCache;
+    private ProgressBar progressBar;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -48,8 +47,8 @@ public class SubcatList extends Activity {
 
         handler = new Handler();
         this.dbHelper = new DBHelper(this);
+        this.progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
-        initDialog();
         initList();
         initCache();
 
@@ -60,14 +59,6 @@ public class SubcatList extends Activity {
     protected void onDestroy() {
         super.onDestroy();
         adapter.changeCursor(null);
-    }
-
-    private void initDialog() {
-        mProgressDialog = new ProgressDialog(SubcatList.this);
-        mProgressDialog.setMessage("loading data...");
-        mProgressDialog.setIndeterminate(false);
-        mProgressDialog.setMax(100);
-        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
     }
 
     private void initList() {
@@ -122,22 +113,19 @@ public class SubcatList extends Activity {
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                mProgressDialog.show();
             }
 
             @Override
             protected void onProgressUpdate(Integer... values) {
                 super.onProgressUpdate(values);
-                Log.d("resp", String.valueOf(values[0]));
-                mProgressDialog.setProgress(values[0]);
+                progressBar.setProgress(values[0]);
             }
 
             @Override
             protected void onPostExecute(ServerResponse serverResponse) {
                 super.onPostExecute(serverResponse);
+                progressBar.setProgress(0);
                 updateCategorii(serverResponse);
-                Log.d("resp", "STOP");
-                mProgressDialog.dismiss();
             }
         };
 

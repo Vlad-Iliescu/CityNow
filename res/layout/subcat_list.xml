@@ -62,6 +62,16 @@
                 android:layout_marginRight="5dp"/>
     </RelativeLayout>
 
+    <ProgressBar
+            android:id="@+id/progressBar"
+            android:progressDrawable="@drawable/prog_bar"
+            android:layout_width="fill_parent"
+            android:layout_height="2dip"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:indeterminateOnly="false"
+            android:max="100"
+            />
+
     <ListView
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
