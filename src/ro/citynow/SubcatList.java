@@ -61,6 +61,12 @@ public class SubcatList extends Activity {
         adapter.changeCursor(null);
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.incoming, R.anim.outgoing);
+    }
+
     private void initList() {
         this.adapter = new SubcategorieAdapter(this, this.dbHelper.getSubcategorii(this.categorieId));
 
@@ -99,6 +105,7 @@ public class SubcatList extends Activity {
                 intent.putExtra("categorie_id", cat_id);
                 intent.putExtra("subcategorie_id", subcat_id);
                 startActivityForResult(intent, LIST_ENTRY);
+                overridePendingTransition(R.anim.incoming, R.anim.outgoing);
 
                 Log.d("resp", String.format("{cat=%d, subcat=%d}", cat_id, subcat_id));
             }

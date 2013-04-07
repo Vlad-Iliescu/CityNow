@@ -67,10 +67,12 @@ public class CityNow extends Activity {
                     Intent intent = new Intent(this, SubcatList.class);
                     intent.putExtra("categorie_id", cat_id);
                     startActivityForResult(intent, SUBCAT_ENTRY);
+                    overridePendingTransition(R.anim.incoming, R.anim.outgoing);
                 } else {
                     Intent intent = new Intent(this, UserList.class);
                     intent.putExtra("categorie_id", cat_id);
                     startActivityForResult(intent, LIST_ENTRY);
+                    overridePendingTransition(R.anim.incoming, R.anim.outgoing);
                 }
             }
         }

@@ -43,6 +43,12 @@ public class UserList extends Activity {
         this.adapter.clearList();
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.incoming, R.anim.outgoing);
+    }
+
     private void initList() {
         this.scrollListener = new EndlessScrollListener();
 
