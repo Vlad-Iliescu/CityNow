@@ -28,7 +28,8 @@ public class UserListAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int i) {
-        return i;
+        User user = userList.get(i);
+        return user.getId();
     }
 
     @Override

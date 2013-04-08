@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import org.json.JSONArray;
@@ -54,7 +56,20 @@ public class UserList extends Activity {
 
         ListView listView = (ListView) findViewById(R.id.usersList);
         listView.setAdapter(adapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position,long id) {
+                itemClicked(id);
+            }
+        });
         listView.setOnScrollListener(scrollListener);
+    }
+
+    public void itemClicked(long user_id) {
+        Intent intent = new Intent(this, UserDetails.class);
+        intent.putExtra("user_id", user_id);
+        startActivityForResult(intent, USER_ENTRY);
+        overridePendingTransition(R.anim.incoming, R.anim.outgoing);
     }
 
     private void loadNextPage() {
