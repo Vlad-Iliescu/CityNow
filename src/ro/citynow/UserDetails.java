@@ -7,10 +7,15 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -19,10 +24,21 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class UserDetails extends Activity {
     private Long userId;
     private ProgressBar progressBar;
+    private Handler handler;
+
+    private int imageIndex = 0;
+    private Timer timer;
+    private TimerTask timerTask;
+    private ImageView slideImageView;
+    private boolean isPaused = false;
+
+    private Details details = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -32,6 +48,7 @@ public class UserDetails extends Activity {
         Intent intent = getIntent();
         this.userId = intent.getLongExtra("user_id", 0);
         this.progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        this.handler = new Handler();
 
         getDetalii(userId);
     }
@@ -76,7 +93,7 @@ public class UserDetails extends Activity {
             try {
                 jsonObject = response.parseAsJson();
                 if (jsonObject != null) {
-                    Details details = new Details(this.userId);
+                    this.details = new Details(this.userId);
                     details.setDenumire(jsonObject.getString("d"));
                     details.setTelefon(jsonObject.getString("t"));
                     details.setWebsite(jsonObject.getString("w"));
@@ -104,7 +121,51 @@ public class UserDetails extends Activity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+            setUpTimer();
         }
+    }
+
+    private void setUpTimer() {
+        this.slideImageView = this.details.createLayout(this);
+        if (this.slideImageView == null) {
+            return;
+        }
+        LinearLayout layout = (LinearLayout) findViewById(R.id.userLayout);
+        layout.addView(this.slideImageView);
+
+        final Runnable updateImage = new Runnable() {
+            @Override
+            public void run() {
+                animateSlideShow();
+            }
+        };
+
+        final int delay = 1000; // delay for 1 sec.
+        final int period = 8000; // repeat every 4 sec.
+
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                handler.post(updateImage);
+            }
+        }, delay, period);
+    }
+
+    private void animateSlideShow() {
+        if (isPaused) {
+            return;
+        }
+
+        if (details == null) {
+            return;
+        }
+        Drawable image = details.getImage(imageIndex);
+        this.imageIndex = (imageIndex + 1) % details.getImageCount();
+
+        this.slideImageView.setImageDrawable(image);
+        Animation animation = AnimationUtils.loadAnimation(this, R.anim.incoming);
+        this.slideImageView.startAnimation(animation);
     }
 
     //------------------------------------
@@ -237,8 +298,10 @@ public class UserDetails extends Activity {
             }
             ImageView imageView = new ImageView(context);
             imageView.setLayoutParams(
-                    new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-            imageView.setBackgroundColor(Color.TRANSPARENT);
+                    new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, 200));
+            imageView.setBackgroundColor(Color.GRAY);
+            imageView.setAdjustViewBounds(true);
+//            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             return imageView;
         }
 
@@ -247,6 +310,10 @@ public class UserDetails extends Activity {
                 return null;
             }
             return pictures.get(i).getThumbFromUrl();
+        }
+
+        public int getImageCount() {
+            return this.pictures.size();
         }
     }
 }
