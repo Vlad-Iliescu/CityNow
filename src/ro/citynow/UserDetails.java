@@ -1,11 +1,15 @@
 package ro.citynow;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -131,6 +135,8 @@ public class UserDetails extends Activity {
             }
             return null;
         }
+
+
     }
 
     class Address {
@@ -223,6 +229,24 @@ public class UserDetails extends Activity {
 
         ArrayList<Picture> getPictures() {
             return pictures;
+        }
+
+        public ImageView createLayout(Context context) {
+            if (pictures.size() == 0) {
+                return null;
+            }
+            ImageView imageView = new ImageView(context);
+            imageView.setLayoutParams(
+                    new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            imageView.setBackgroundColor(Color.TRANSPARENT);
+            return imageView;
+        }
+
+        public Drawable getImage(int i) {
+            if (i > pictures.size()) {
+                return null;
+            }
+            return pictures.get(i).getThumbFromUrl();
         }
     }
 }
