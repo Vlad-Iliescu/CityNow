@@ -3,12 +3,17 @@ package ro.citynow;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Base64;
 import android.util.Log;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -24,6 +29,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -160,12 +166,21 @@ public class UserDetails extends Activity {
         if (details == null) {
             return;
         }
-        Drawable image = details.getImage(imageIndex);
+        Bitmap image = details.getImage(imageIndex);
+        if (image == null) {
+            return;
+        }
+
         this.imageIndex = (imageIndex + 1) % details.getImageCount();
 
-        this.slideImageView.setImageDrawable(image);
+        this.slideImageView.setImageBitmap(image);
         Animation animation = AnimationUtils.loadAnimation(this, R.anim.incoming);
         this.slideImageView.startAnimation(animation);
+    }
+
+    private void onImageClick(ArrayList<Picture> pictures) {
+        Log.d("pictures", String.valueOf(imageIndex));
+
     }
 
     //------------------------------------
@@ -185,6 +200,8 @@ public class UserDetails extends Activity {
             this.denumire = denumire;
             this.urlPic = urlPic;
             this.urlThumb = urlThumb;
+
+            new ThumbnailAsyncTask().execute(urlThumb);
         }
 
         public Drawable getThumbFromUrl() {
@@ -197,7 +214,28 @@ public class UserDetails extends Activity {
             return null;
         }
 
+        Bitmap getThumb() {
+            return thumb;
+        }
 
+        public class ThumbnailAsyncTask extends AsyncTask<String, Void, Bitmap> {
+
+            @Override
+            protected Bitmap doInBackground(String... strings) {
+                final String url = strings[0];
+                try {
+                    return BitmapFactory.decodeStream((InputStream)new URL(url).getContent());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Bitmap bitmap) {
+                thumb = bitmap;
+            }
+        }
     }
 
     class Address {
@@ -299,17 +337,25 @@ public class UserDetails extends Activity {
             ImageView imageView = new ImageView(context);
             imageView.setLayoutParams(
                     new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, 200));
-            imageView.setBackgroundColor(Color.GRAY);
+            imageView.setBackgroundResource(R.drawable.loading);
             imageView.setAdjustViewBounds(true);
+
 //            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onImageClick(pictures);
+                }
+            });
+
             return imageView;
         }
 
-        public Drawable getImage(int i) {
+        public Bitmap getImage(int i) {
             if (i > pictures.size()) {
                 return null;
             }
-            return pictures.get(i).getThumbFromUrl();
+            return pictures.get(i).getThumb();
         }
 
         public int getImageCount() {
