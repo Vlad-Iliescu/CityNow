@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CityNow">
+        <attr name="linePageIndicatorStyle" format="reference"/>
+    </declare-styleable>
+
+    <attr name="centered" format="boolean" />
+    <attr name="selectedColor" format="color" />
+    <attr name="strokeWidth" format="dimension" />
+    <attr name="unselectedColor" format="color" />
+
+    <declare-styleable name="LinePageIndicator">
+        <attr name="centered" />
+        <attr name="unselectedColor" />
+        <attr name="selectedColor" />
+        <attr name="lineWidth" format="dimension" />
+        <attr name="strokeWidth" />
+        <attr name="gapWidth" format="dimension" />
+        <attr name="android:background"/>
+    </declare-styleable>
+</resources>

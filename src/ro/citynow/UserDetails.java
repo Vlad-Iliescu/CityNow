@@ -337,7 +337,8 @@ public class UserDetails extends Activity {
             ImageView imageView = new ImageView(context);
             imageView.setLayoutParams(
                     new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, 200));
-            imageView.setBackgroundResource(R.drawable.loading);
+//            imageView.setBackgroundResource(R.drawable.loading);
+            imageView.setBackgroundColor(Color.GRAY);
             imageView.setAdjustViewBounds(true);
 
 //            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);

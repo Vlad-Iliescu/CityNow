@@ -21,5 +21,6 @@
         <activity android:name=".SubcatList"/>
         <activity android:name=".UserList"/>
         <activity android:name=".UserDetails"/>
+        <activity android:name=".PicturesGallery"/>
     </application>
 </manifest> 
