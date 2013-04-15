@@ -34,10 +34,10 @@ public class PicturesGallery extends FragmentActivity {
     private ArrayList<String> urls = new ArrayList<String>();
 
     private ViewPager mPager;
-    private PageIndicator mIndicator;
+    private LinePageIndicator mIndicator;
     private PictureFragmentAdapter mAdapter;
 
-    private PictureCache pictureCache;
+    private static PictureCache pictureCache;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -54,24 +54,21 @@ public class PicturesGallery extends FragmentActivity {
 
         mPager = (ViewPager)findViewById(R.id.pager);
         mPager.setAdapter(mAdapter);
+        mPager.setCurrentItem(imageIndex - 1);
 
         mIndicator = (LinePageIndicator)findViewById(R.id.indicator);
         mIndicator.setViewPager(mPager);
-//        mIndicator.setCurrentItem(imageIndex);
-
+        mIndicator.setCurrentItem(imageIndex - 1);
     }
 
     private void initCache() {
         final ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
         final int memoryClassBytes = am.getMemoryClass() * 1024 * 1024;
-        this.pictureCache = new PictureCache(memoryClassBytes / 2);
-    }
-
-    private void initPicturesDownload() {
-
+        pictureCache = new PictureCache(memoryClassBytes / 2);
     }
 
     public class PictureFragmentAdapter extends FragmentPagerAdapter {
+        private static final String STATE_SELECTED_NAVIGATION_ITEM = "selected_navigation_item";
 
         public PictureFragmentAdapter(FragmentManager fm) {
             super(fm);
@@ -79,9 +76,9 @@ public class PicturesGallery extends FragmentActivity {
 
         @Override
         public Fragment getItem(int i) {
-            Log.d("index", String.format("{i: %d, imageIndex: %d}", i, i % urls.size()));
-            imageIndex = i % urls.size();
-            Fragment fragment = new PictureFragment();
+            Log.d("index", String.format("{i: %d, imageIndex: %d}", i, mPager.getCurrentItem()));
+
+            Fragment fragment = PictureFragment.newInstance(urls.get(i % urls.size()));
             fragment.setRetainInstance(true);
             return fragment;
         }
@@ -92,21 +89,23 @@ public class PicturesGallery extends FragmentActivity {
         }
     }
 
-    public class PictureFragment extends Fragment {
+    public static class PictureFragment extends Fragment {
         private String url;
+
+        public static PictureFragment newInstance(String url) {
+            PictureFragment fragment = new PictureFragment();
+            fragment.url = url;
+            return fragment;
+        }
 
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-
-            url = urls.get(imageIndex);
         }
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             ImageView imageView = new ImageView(getActivity());
-//            imageView.setBackgroundColor(Color.BLACK);
-
             imageView.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
 
             final Bitmap cachedResult = pictureCache.get(url);
@@ -122,17 +121,39 @@ public class PicturesGallery extends FragmentActivity {
             linearLayout.setOrientation(LinearLayout.VERTICAL);
             linearLayout.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
 
-//            linearLayout.setBackgroundColor(Color.BLUE);
-//            linearLayout.setGravity(Gravity.CENTER);
-
             linearLayout.addView(imageView);
-
             return linearLayout;
         }
 
-        @Override
-        public void onSaveInstanceState(Bundle outState) {
-            super.onSaveInstanceState(outState);
+        public class PictureAsyncTask extends AsyncTask<String, Void, Bitmap> {
+            private ImageView imageView;
+
+            public PictureAsyncTask(ImageView imageView) {
+                this.imageView = imageView;
+            }
+
+            @Override
+            protected Bitmap doInBackground(String... strings) {
+                final String url = strings[0];
+                Bitmap bitmap = null;
+
+                try {
+                    bitmap =  BitmapFactory.decodeStream((InputStream) new URL(url).getContent());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                if (bitmap != null) {
+                    pictureCache.put(url, bitmap);
+                }
+
+                return bitmap;
+            }
+
+            @Override
+            protected void onPostExecute(Bitmap bitmap) {
+                imageView.setImageBitmap(bitmap);
+            }
         }
     }
 
@@ -147,34 +168,4 @@ public class PicturesGallery extends FragmentActivity {
         }
     }
 
-    public class PictureAsyncTask extends AsyncTask<String, Void, Bitmap> {
-        private ImageView imageView;
-
-        public PictureAsyncTask(ImageView imageView) {
-            this.imageView = imageView;
-        }
-
-        @Override
-        protected Bitmap doInBackground(String... strings) {
-            final String url = strings[0];
-            Bitmap bitmap = null;
-
-            try {
-                bitmap =  BitmapFactory.decodeStream((InputStream) new URL(url).getContent());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            if (bitmap != null) {
-                pictureCache.put(url, bitmap);
-            }
-
-            return bitmap;
-        }
-
-        @Override
-        protected void onPostExecute(Bitmap bitmap) {
-            imageView.setImageBitmap(bitmap);
-        }
-    }
 }
