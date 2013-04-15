@@ -374,6 +374,15 @@ public class LinePageIndicator extends View implements PageIndicator {
         requestLayout();
     }
 
+    @Override
+    public Parcelable onSaveInstanceState() {
+        Parcelable superState = super.onSaveInstanceState();
+        SavedState savedState = new SavedState(superState);
+        savedState.currentPage = mCurrentPage;
+        return savedState;
+    }
+
+
     static class SavedState extends BaseSavedState {
         int currentPage;
 

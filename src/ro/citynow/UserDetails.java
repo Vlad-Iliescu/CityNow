@@ -34,6 +34,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class UserDetails extends Activity {
+    public static final int GALLERY_INTENT = 3;
+
     private Long userId;
     private ProgressBar progressBar;
     private Handler handler;
@@ -115,11 +117,10 @@ public class UserDetails extends Activity {
                     // galerie
                     JSONArray poze = jsonObject.getJSONArray("g");
                     if (poze.length() > 0) {
-                        ArrayList<Picture> pictures = details.getPictures();
                         for (int i=0; i<poze.length(); ++i) {
                             JSONObject poza = poze.getJSONObject(i);
-                            pictures.add(new Picture(poza.getInt("i"), poza.getString("d"), poza.getString("p"),
-                                    poza.getString("t")));
+                            details.addPicture(poza.getInt("i"), poza.getString("d"), poza.getString("p"),
+                                    poza.getString("t"));
                         }
                     }
                 }
@@ -178,9 +179,15 @@ public class UserDetails extends Activity {
         this.slideImageView.startAnimation(animation);
     }
 
-    private void onImageClick(ArrayList<Picture> pictures) {
-        Log.d("pictures", String.valueOf(imageIndex));
+    private void onImageClick(ArrayList<String> pictures) {
+        Intent intent = new Intent(this, PicturesGallery.class);
+        intent.putStringArrayListExtra("urls", pictures);
+        intent.putExtra("index", imageIndex);
 
+        Log.d("index", String.valueOf(imageIndex));
+
+        startActivityForResult(intent, GALLERY_INTENT);
+        overridePendingTransition(R.anim.incoming, R.anim.outgoing);
     }
 
     //------------------------------------
@@ -290,6 +297,7 @@ public class UserDetails extends Activity {
         private Long id;
         private String denumire;
         private ArrayList<Picture> pictures = new ArrayList<Picture>();
+        private ArrayList<String> picUrls = new ArrayList<String>();
         private Address address = new Address();
         private String telefon;
         private String website;
@@ -326,6 +334,11 @@ public class UserDetails extends Activity {
             return address;
         }
 
+        public void addPicture(int id, String denumire, String poza, String thumb) {
+            this.pictures.add(new Picture(id, denumire, poza, thumb));
+            this.picUrls.add(poza);
+        }
+
         ArrayList<Picture> getPictures() {
             return pictures;
         }
@@ -345,7 +358,7 @@ public class UserDetails extends Activity {
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    onImageClick(pictures);
+                    onImageClick(picUrls);
                 }
             });
 
