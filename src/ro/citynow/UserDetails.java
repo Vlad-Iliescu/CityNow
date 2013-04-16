@@ -1,26 +1,25 @@
 package ro.citynow;
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Base64;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-
+import android.widget.*;
+import android.widget.LinearLayout.LayoutParams;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,7 +28,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -129,6 +127,7 @@ public class UserDetails extends Activity {
                 e.printStackTrace();
             }
             setUpTimer();
+            setUpLayout();
         }
     }
 
@@ -157,6 +156,12 @@ public class UserDetails extends Activity {
                 handler.post(updateImage);
             }
         }, delay, period);
+    }
+
+    private void setUpLayout() {
+        LinearLayout layout = (LinearLayout) findViewById(R.id.userLayout);
+        View adresaLayout = details.createAdresaLayout(this);
+        layout.addView(adresaLayout);
     }
 
     private void animateSlideShow() {
@@ -334,6 +339,41 @@ public class UserDetails extends Activity {
             return address;
         }
 
+        public View createAdresaLayout(Context context) {
+            if (address.getAdresa() == null && address.getZona() == null) {
+                return null;
+            }
+
+            LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View view =  inflater.inflate(R.layout.adresa_layout, null, false);
+
+            TextView denumireText = (TextView) view.findViewById(R.id.adresaTextView);
+            String text = "";
+            if (address.getZona() != null) {
+                text += address.getZona() + ", ";
+            }
+            if (address.getAdresa() != null) {
+                text += address.getAdresa();
+            }
+            denumireText.setText(text);
+
+            ImageButton button = (ImageButton) view.findViewById(R.id.directionsButton);
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
+                        Uri.parse("http://maps.google.com/maps?daddr="
+                                + address.latitudine + "," + address.longitudine + "&dirflg=d&nav=1"));
+
+                    try {
+                        startActivity(intent);
+                    } catch (Exception ignored) {}
+                }
+            });
+
+            return view;
+        }
+
         public void addPicture(int id, String denumire, String poza, String thumb) {
             this.pictures.add(new Picture(id, denumire, poza, thumb));
             this.picUrls.add(poza);
@@ -348,13 +388,10 @@ public class UserDetails extends Activity {
                 return null;
             }
             ImageView imageView = new ImageView(context);
-            imageView.setLayoutParams(
-                    new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, 200));
-//            imageView.setBackgroundResource(R.drawable.loading);
+            imageView.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, 200));
             imageView.setBackgroundColor(Color.GRAY);
             imageView.setAdjustViewBounds(true);
 
-//            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
