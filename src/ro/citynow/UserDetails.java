@@ -1,7 +1,6 @@
 package ro.citynow;
 
 import android.app.Activity;
-import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -15,7 +14,6 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.*;
@@ -39,8 +37,6 @@ public class UserDetails extends Activity {
     private Handler handler;
 
     private int imageIndex = 0;
-    private Timer timer;
-    private TimerTask timerTask;
     private ImageView slideImageView;
     private boolean isPaused = false;
 
@@ -162,6 +158,12 @@ public class UserDetails extends Activity {
         LinearLayout layout = (LinearLayout) findViewById(R.id.userLayout);
         View adresaLayout = details.createAdresaLayout(this);
         layout.addView(adresaLayout);
+
+        View telefonLayout = details.createTelefonLayout(this);
+        layout.addView(telefonLayout);
+
+        View websiteLayout = details.createWebsiteLayout(this);
+        layout.addView(websiteLayout);
     }
 
     private void animateSlideShow() {
@@ -216,6 +218,7 @@ public class UserDetails extends Activity {
             new ThumbnailAsyncTask().execute(urlThumb);
         }
 
+        @SuppressWarnings("unused")
         public Drawable getThumbFromUrl() {
             try {
                 InputStream is = (InputStream) new URL(urlThumb).getContent();
@@ -256,6 +259,7 @@ public class UserDetails extends Activity {
         private String longitudine;
         private String zona;
 
+        @SuppressWarnings("unused")
         Address(String adresa, String zona, String latitudine, String longitudine) {
             this.adresa = adresa;
             this.latitudine = latitudine;
@@ -273,6 +277,7 @@ public class UserDetails extends Activity {
             this.adresa = adresa;
         }
 
+        @SuppressWarnings("unused")
         String getLatitudine() {
             return latitudine;
         }
@@ -281,6 +286,7 @@ public class UserDetails extends Activity {
             this.latitudine = latitudine;
         }
 
+        @SuppressWarnings("unused")
         String getLongitudine() {
             return longitudine;
         }
@@ -311,6 +317,7 @@ public class UserDetails extends Activity {
             this.id = id;
         }
 
+        @SuppressWarnings("unused")
         String getDenumire() {
             return denumire;
         }
@@ -319,6 +326,7 @@ public class UserDetails extends Activity {
             this.denumire = denumire;
         }
 
+        @SuppressWarnings("unused")
         String getTelefon() {
             return telefon;
         }
@@ -327,6 +335,7 @@ public class UserDetails extends Activity {
             this.telefon = telefon;
         }
 
+        @SuppressWarnings("unused")
         String getWebsite() {
             return website;
         }
@@ -374,11 +383,65 @@ public class UserDetails extends Activity {
             return view;
         }
 
+        public View createTelefonLayout(Context context) {
+            if (telefon == null || telefon.length() != 10) {
+                return null;
+            }
+
+            LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View view =  inflater.inflate(R.layout.telefon_layout, null, false);
+
+            TextView telefonText = (TextView) view.findViewById(R.id.telefonTextView);
+            telefonText.setText(String.format("%s.%s.%s", telefon.substring(0,4),
+                    telefon.substring(4, 7),telefon.substring(7)));
+
+            ImageButton button = (ImageButton) view.findViewById(R.id.callButton);
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(Intent.ACTION_CALL,
+                            Uri.parse("tel:"+telefon));
+
+                    try {
+                        startActivity(intent);
+                    } catch (Exception ignored) {}
+                }
+            });
+
+            return view;
+        }
+
+        public View createWebsiteLayout(Context context) {
+            if (website == null) {
+                return null;
+            }
+
+            LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View view =  inflater.inflate(R.layout.website_layout, null, false);
+
+            TextView telefonText = (TextView) view.findViewById(R.id.websiteTextView);
+            telefonText.setText(denumire);
+
+            ImageButton button = (ImageButton) view.findViewById(R.id.browseButton);
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(website));
+                    try {
+                        startActivity(intent);
+                    } catch (Exception ignored) {}
+                }
+            });
+
+            return view;
+        }
+
         public void addPicture(int id, String denumire, String poza, String thumb) {
             this.pictures.add(new Picture(id, denumire, poza, thumb));
             this.picUrls.add(poza);
         }
 
+        @SuppressWarnings("unused")
         ArrayList<Picture> getPictures() {
             return pictures;
         }

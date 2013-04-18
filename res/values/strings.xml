@@ -10,4 +10,6 @@
     <string name="default_oras">Craiova</string>
     <string name="user_logo">Logo</string>
     <string name="directions">Directions</string>
+    <string name="telefon">Telefon</string>
+    <string name="website">Website</string>
 </resources>
