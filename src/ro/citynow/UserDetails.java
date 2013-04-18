@@ -3,16 +3,16 @@ package ro.citynow;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
+import android.graphics.*;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.FloatMath;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -59,6 +59,13 @@ public class UserDetails extends Activity {
     public void onBackPressed() {
         super.onBackPressed();
         overridePendingTransition(R.anim.incoming, R.anim.outgoing);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == GALLERY_INTENT) {
+            isPaused = false;
+        }
     }
 
     private void getDetalii(Long user_id) {
@@ -193,6 +200,7 @@ public class UserDetails extends Activity {
 
         Log.d("index", String.valueOf(imageIndex));
 
+        isPaused = true;
         startActivityForResult(intent, GALLERY_INTENT);
         overridePendingTransition(R.anim.incoming, R.anim.outgoing);
     }
@@ -450,7 +458,7 @@ public class UserDetails extends Activity {
             if (pictures.size() == 0) {
                 return null;
             }
-            ImageView imageView = new ImageView(context);
+            final ImageView imageView = new ImageView(context);
             imageView.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, 200));
             imageView.setBackgroundColor(Color.GRAY);
             imageView.setAdjustViewBounds(true);
