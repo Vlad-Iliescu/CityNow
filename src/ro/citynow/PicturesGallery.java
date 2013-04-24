@@ -56,6 +56,22 @@ public class PicturesGallery extends FragmentActivity {
         mIndicator = (LinePageIndicator)findViewById(R.id.indicator);
         mIndicator.setViewPager(mPager);
         mIndicator.setCurrentItem(imageIndex - 1);
+        mIndicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int i, float v, int i2) {}
+
+            @Override
+            public void onPageSelected(int i) {
+//                if (i >= 0) {
+//                    View view = mPager.getChildAt(mPager.getCurrentItem());
+//                    PictureFragment.ZoomImageView zoomImageView = (PictureFragment.ZoomImageView) view.findViewById(1124);
+//                    zoomImageView.resetView();
+//                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int i) {}
+        });
     }
 
     private void initCache() {
@@ -104,6 +120,7 @@ public class PicturesGallery extends FragmentActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             final ZoomImageView imageView = new ZoomImageView(getActivity());
             imageView.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
+            imageView.setId(1124);
 
             final Bitmap cachedResult = pictureCache.get(url);
             if (cachedResult != null) {
@@ -265,6 +282,11 @@ public class PicturesGallery extends FragmentActivity {
 
                 view.setImageMatrix(mViewMatrix); // display the transformation on screen
                 return true; // indicate event was handled
+            }
+
+            public void resetView() {
+                mViewMatrix.reset();
+                this.setImageMatrix(mViewMatrix);
             }
         }
 

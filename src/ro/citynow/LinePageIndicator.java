@@ -309,11 +309,12 @@ public class LinePageIndicator extends View implements PageIndicator {
 
     @Override
     public void onPageSelected(int position) {
+        int oldPosition = mCurrentPage;
         mCurrentPage = position;
         invalidate();
 
         if (mListener != null) {
-            mListener.onPageSelected(position);
+            mListener.onPageSelected(oldPosition);
         }
     }
 

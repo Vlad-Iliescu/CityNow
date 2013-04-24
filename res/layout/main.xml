@@ -8,7 +8,7 @@
 
     <RelativeLayout
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="48dip"
             android:background="#474747"
             android:focusable="false"
             android:layout_margin="0dp"
@@ -17,7 +17,7 @@
 
         <ImageButton
                 android:layout_width="70dp"
-                android:layout_height="45dp"
+                android:layout_height="48dp"
                 android:id="@+id/logoButton"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
@@ -28,8 +28,8 @@
                 android:onClick="onLogoButtonClick"/>
 
         <ImageButton
-                android:layout_width="45dp"
-                android:layout_height="45dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:id="@+id/filmButton"
                 android:layout_alignParentLeft="false"
                 android:layout_alignParentRight="true"
@@ -39,8 +39,8 @@
                 android:contentDescription="@string/button_filme"/>
 
         <ImageButton
-                android:layout_width="45dp"
-                android:layout_height="45dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:id="@+id/promotiiButton"
                 android:layout_toLeftOf="@+id/filmButton"
                 android:layout_alignTop="@+id/logoButton"
@@ -51,8 +51,8 @@
                 android:layout_marginRight="5dp"/>
 
         <ImageButton
-                android:layout_width="45dp"
-                android:layout_height="45dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:id="@+id/evenimenteButton"
                 android:src="@drawable/button_evenimente_normal"
                 android:background="@null"
@@ -81,13 +81,13 @@
 
     <RelativeLayout
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="48dip"
             android:layout_weight="0"
             android:background="#474747">
 
         <ImageButton
-                android:layout_width="45dp"
-                android:layout_height="45dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:id="@+id/orasButton"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentLeft="true"
@@ -97,8 +97,8 @@
                 android:layout_marginLeft="5dp"/>
 
         <ImageButton
-                android:layout_width="45dp"
-                android:layout_height="45dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:id="@+id/searchButton"
                 android:layout_alignParentRight="true"
                 android:layout_alignBottom="@+id/orasButton"
@@ -109,18 +109,16 @@
 
         <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="35dp"
+                android:layout_height="48dip"
                 android:text="@string/default_oras"
                 android:id="@+id/textView1"
-                android:layout_toRightOf="@+id/orasButton"
-                android:layout_alignTop="@+id/orasButton"
-                android:layout_toLeftOf="@+id/searchButton"
                 android:clickable="false"
                 android:gravity="center_vertical"
                 android:textColor="#cccccc"
                 android:textStyle="bold"
-                android:textSize="20dp"
-                android:layout_marginTop="10dp"/>
+                android:textSize="22dip"
+                android:layout_toRightOf="@+id/orasButton"
+                android:layout_alignTop="@+id/orasButton"/>
 
     </RelativeLayout>
 
